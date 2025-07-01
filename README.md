@@ -2,7 +2,7 @@
 
 A simple web application that visualizes your life progress and the current year's progress as interactive progress bars.
 
-![Yolo App Screenshot](yolo-screenshot.png)
+![Yolo App Screenshot](yolo-app-screenshot.png)
 
 ## Features
 
