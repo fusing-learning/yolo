@@ -34,7 +34,7 @@ A simple web application that visualizes your life progress and the current year
 ```
 yolo/
 ├── README.md
-└── yolo.html    # Main application file
+└── index.html    # Main application file
 ```
 
 ## Browser Compatibility
