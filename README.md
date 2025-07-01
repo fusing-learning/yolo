@@ -16,7 +16,7 @@ A simple web application that visualizes your life progress and the current year
 
 ## Usage
 
-1. Open `yolo.html` in any modern web browser
+1. Open `index.html` in any modern web browser
 2. Enter your birthdate using the date picker
 3. Adjust your life expectancy if desired (defaults to 83 years based on this [article](https://www.channelnewsasia.com/singapore/life-expectancy-singapore-rises-2024-5154631)).
 4. Your settings are automatically saved and will persist between sessions
