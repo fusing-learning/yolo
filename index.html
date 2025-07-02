@@ -122,15 +122,6 @@
             const birthdateString = birthdateInput.value;
             const lifeExpectancy = parseInt(lifeExpectancyInput.value, 10);
 
-            // Update the birthdate display format for clarity
-            if (birthdateString) {
-                const birthdateForDisplay = new Date(birthdateString);
-                const birthdateUTCForDisplay = new Date(birthdateForDisplay.getUTCFullYear(), birthdateForDisplay.getUTCMonth(), birthdateForDisplay.getUTCDate());
-                birthdateDisplay.textContent = formatDate(birthdateUTCForDisplay);
-            } else {
-                birthdateDisplay.textContent = '';
-            }
-
             // Save the current settings whenever an update is triggered
             saveSettings();
 
@@ -138,26 +129,39 @@
                 lifeProgressBar.style.width = '0%';
                 lifeProgressText.textContent = 'Enter your birthdate';
                 lifeSummaryEl.textContent = '';
+                birthdateDisplay.textContent = '';
                 return;
             }
 
-            const birthdate = new Date(birthdateString);
-            const birthdateUTC = new Date(birthdate.getUTCFullYear(), birthdate.getUTCMonth(), birthdate.getUTCDate());
+            // Create date object in local timezone by parsing string parts.
+            // This avoids timezone interpretation issues with new Date('YYYY-MM-DD').
+            const parts = birthdateString.split('-').map(Number);
+            // The month is 0-indexed in JavaScript's Date constructor (0=Jan, 1=Feb, etc.)
+            const birthdate = new Date(parts[0], parts[1] - 1, parts[2]);
+
+            // Update the birthdate display for clarity
+            birthdateDisplay.textContent = formatDate(birthdate);
+
             const now = new Date();
 
-            if (birthdateUTC > now) {
+            if (birthdate > now) {
                 lifeProgressBar.style.width = '0%';
                 lifeProgressText.textContent = 'Date is in the future';
                 lifeSummaryEl.textContent = '';
                 return;
             }
 
-            const daysLived = (now - birthdateUTC) / (1000 * 60 * 60 * 24);
-            const totalDaysInLife = lifeExpectancy * 365.25; // Average to account for leap years
+            // Calculate the expected end-of-life date based on the birthdate.
+            const expectedEndDate = new Date(birthdate);
+            expectedEndDate.setFullYear(birthdate.getFullYear() + lifeExpectancy);
 
-            const percentagePassed = (daysLived / totalDaysInLife) * 100;
+            // Calculate progress based on the millisecond difference for accuracy.
+            const timeLivedMs = now - birthdate;
+            const totalLifespanMs = expectedEndDate - birthdate;
+            const percentagePassed = (timeLivedMs / totalLifespanMs) * 100;
 
             // Update UI
+            const daysLived = timeLivedMs / (1000 * 60 * 60 * 24);
             lifeProgressBar.style.width = `${Math.min(100, percentagePassed).toFixed(4)}%`;
             lifeProgressText.textContent = `${percentagePassed.toFixed(4)}%`;
             lifeSummaryEl.textContent = `You have lived for ${Math.floor(daysLived).toLocaleString()} days so far.`;
@@ -221,8 +225,8 @@
             updateYearProgress();
             updateLifeProgress(); // Then calculate progress based on loaded/default data
             
-            // Recalculate year progress every minute to keep it fresh
-            setInterval(updateYearProgress, 60000);
+            // Recalculate year progress every minute.
+            setInterval(updateYearProgress, 60000); // 1 minute = 60000 milliseconds
         });
 
     </script>
