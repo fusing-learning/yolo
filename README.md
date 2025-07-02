@@ -11,7 +11,7 @@ A simple web application that visualizes your life progress and the current year
   - Your birthdate
   - Your life expectancy (customizable, defaults to 83 years)
 - **Persistent Settings**: Your birthdate and life expectancy are saved in your browser's localStorage
-- **Real-time Updates**: Year progress updates every minute
+- **Real-time Updates**: Progresses are updated every minute
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## Usage

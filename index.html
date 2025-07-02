@@ -62,7 +62,8 @@
                     <span id="lifeProgressText">Enter your birthdate</span>
                 </div>
             </div>
-             <p id="lifeSummary" class="text-center text-gray-600 text-sm h-4"></p>
+             <p id="lifeSummary" class="text-center text-gray-600 text-sm min-h-[1.25rem]"></p>
+             <p id="lifeRemaining" class="text-center text-gray-600 text-sm mt-1 min-h-[1.25rem]"></p>
         </div>
         
     </div>
@@ -78,6 +79,7 @@
         const lifeExpectancyInput = document.getElementById('lifeExpectancy');
         const currentDateEl = document.getElementById('currentDate');
         const lifeSummaryEl = document.getElementById('lifeSummary');
+        const lifeRemainingEl = document.getElementById('lifeRemaining');
         const saveIndicator = document.getElementById('saveIndicator');
         let saveTimeout;
 
@@ -104,14 +106,12 @@
             const startOfYear = new Date(now.getFullYear(), 0, 1);
             const endOfYear = new Date(now.getFullYear() + 1, 0, 1);
             
-            const totalDaysInYear = (endOfYear - startOfYear) / (1000 * 60 * 60 * 24);
-            const dayOfYear = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
-            
-            const percentagePassed = (dayOfYear / totalDaysInYear) * 100;
+            // Calculate percentage based on milliseconds for a smoother, real-time update.
+            const percentagePassed = ((now - startOfYear) / (endOfYear - startOfYear)) * 100;
 
             // Update UI
-            yearProgressBar.style.width = `${percentagePassed.toFixed(2)}%`;
-            yearProgressText.textContent = `${percentagePassed.toFixed(2)}%`;
+            yearProgressBar.style.width = `${percentagePassed.toFixed(4)}%`;
+            yearProgressText.textContent = `${percentagePassed.toFixed(4)}%`;
             currentDateEl.textContent = formatDate(now);
         }
 
@@ -129,6 +129,7 @@
                 lifeProgressBar.style.width = '0%';
                 lifeProgressText.textContent = 'Enter your birthdate';
                 lifeSummaryEl.textContent = '';
+                lifeRemainingEl.textContent = '';
                 birthdateDisplay.textContent = '';
                 return;
             }
@@ -148,6 +149,7 @@
                 lifeProgressBar.style.width = '0%';
                 lifeProgressText.textContent = 'Date is in the future';
                 lifeSummaryEl.textContent = '';
+                lifeRemainingEl.textContent = '';
                 return;
             }
 
@@ -165,6 +167,17 @@
             lifeProgressBar.style.width = `${Math.min(100, percentagePassed).toFixed(4)}%`;
             lifeProgressText.textContent = `${percentagePassed.toFixed(4)}%`;
             lifeSummaryEl.textContent = `You have lived for ${Math.floor(daysLived).toLocaleString()} days so far.`;
+
+            // Calculate and display remaining time
+            const timeRemainingMs = expectedEndDate - now;
+            if (timeRemainingMs > 0) {
+                const daysRemaining = timeRemainingMs / (1000 * 60 * 60 * 24);
+                const weeksRemaining = daysRemaining / 7;
+                lifeRemainingEl.textContent = `Per your inputs, you have ~${Math.floor(weeksRemaining).toLocaleString()} weeks (${Math.floor(daysRemaining).toLocaleString()} days) left.`;
+            } else {
+                lifeRemainingEl.textContent = "You've lived beyond the average expectancy. Congratulations!";
+            }
+
         }
         
         /**
