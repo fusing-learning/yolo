@@ -122,9 +122,6 @@
             const birthdateString = birthdateInput.value;
             const lifeExpectancy = parseInt(lifeExpectancyInput.value, 10);
 
-            // Save the current settings whenever an update is triggered
-            saveSettings();
-
             if (!birthdateString || isNaN(lifeExpectancy) || lifeExpectancy <= 0) {
                 lifeProgressBar.style.width = '0%';
                 lifeProgressText.textContent = 'Enter your birthdate';
@@ -175,11 +172,20 @@
                 const weeksRemaining = daysRemaining / 7;
                 lifeRemainingEl.textContent = `Per your inputs, you have ~${Math.floor(weeksRemaining).toLocaleString()} weeks (${Math.floor(daysRemaining).toLocaleString()} days) left.`;
             } else {
-                lifeRemainingEl.textContent = "You've lived beyond the average expectancy. Congratulations!";
+                lifeRemainingEl.textContent = "You've lived beyond the inputted expectancy. Congratulations!";
             }
 
         }
         
+        /**
+         * Handles user input changes, saves settings, and triggers a progress update.
+         */
+        function handleInputChange() {
+            // Save settings first, then update the progress display.
+            saveSettings();
+            updateLifeProgress();
+        }
+
         /**
          * Sets a default birthdate (25 years ago) if none is saved.
          */
@@ -229,17 +235,22 @@
 
 
         // --- Event Listeners ---
-        birthdateInput.addEventListener('change', updateLifeProgress);
-        lifeExpectancyInput.addEventListener('input', updateLifeProgress);
+        birthdateInput.addEventListener('change', handleInputChange);
+        lifeExpectancyInput.addEventListener('input', handleInputChange);
 
         // --- Initial Load ---
         window.addEventListener('load', () => {
             loadSettings(); // Load saved settings first
+
+            // Perform initial calculations on load
             updateYearProgress();
-            updateLifeProgress(); // Then calculate progress based on loaded/default data
+            updateLifeProgress();
             
-            // Recalculate year progress every minute.
-            setInterval(updateYearProgress, 60000); // 1 minute = 60000 milliseconds
+            // Recalculate both progress bars every minute to keep them live.
+            setInterval(() => {
+                updateYearProgress();
+                updateLifeProgress();
+            }, 60000); // 1 minute = 60000 milliseconds
         });
 
     </script>
