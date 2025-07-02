@@ -170,9 +170,9 @@
             if (timeRemainingMs > 0) {
                 const daysRemaining = timeRemainingMs / (1000 * 60 * 60 * 24);
                 const weeksRemaining = daysRemaining / 7;
-                lifeRemainingEl.textContent = `Per your inputs, you have ~${Math.floor(weeksRemaining).toLocaleString()} weeks (${Math.floor(daysRemaining).toLocaleString()} days) left.`;
+                lifeRemainingEl.textContent = `Per your inputs, you have approx. ~${Math.floor(weeksRemaining).toLocaleString()} weeks (${Math.floor(daysRemaining).toLocaleString()} days) left.`;
             } else {
-                lifeRemainingEl.textContent = "You've lived beyond the inputted expectancy. Congratulations!";
+                lifeRemainingEl.textContent = "You've lived beyond the specified expectancy. Congratulations!";
             }
 
         }
@@ -236,7 +236,7 @@
 
         // --- Event Listeners ---
         birthdateInput.addEventListener('change', handleInputChange);
-        lifeExpectancyInput.addEventListener('input', handleInputChange);
+        lifeExpectancyInput.addEventListener('change', handleInputChange);
 
         // --- Initial Load ---
         window.addEventListener('load', () => {
